@@ -81,6 +81,14 @@ func keyValueGetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(value))
 }
 
+func keyValueDeleteHandler(w http.ResponseWriter, r *http.Request){
+	fmt.Println("DELETE request")
+	vars := mux.Vars(r)
+	key := vars["key"]
+	logger.WriteDelete(key)
+	w.Write([]byte("the value was removed with exit"))
+}
+
 func main() {
 	r := mux.NewRouter()
 	err := initializeTransactionLog()
@@ -90,5 +98,6 @@ func main() {
 	//register keyvalueputhandler as the handler function for put
 	r.HandleFunc("/v1/{key}", keyValuePutHandler).Methods("PUT")
 	r.HandleFunc("/v1/{key}", keyValueGetHandler).Methods("GET")
+	r.HandleFunc("/v1/{key}", keyValueDeleteHandler).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
